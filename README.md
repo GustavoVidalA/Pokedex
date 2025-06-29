@@ -1,83 +1,178 @@
-# Pokedex
-# API Pokedex
+# 📦 Pokédex API
 
-API REST sencilla construida con Node.js, Express y MongoDB que se ejecuta dentro de Docker. Permite operaciones CRUD básicas protegidas con autenticación JWT. A continuación se describe el flujo completo para ponerla en marcha.
+API RESTful construida con **Node.js**, **Express** y **MongoDB**, ejecutada dentro de **Docker**, que permite gestionar información de Pokémon. Incluye autenticación mediante JWT y un script para poblar la base de datos con datos de ejemplo. Todas las pruebas las realice con Postman por lo que recomiendo su utilizacion.
 
-## Estructura de carpetas
 
-- `index.js` - punto de entrada de la API
-- `models/` - modelos de Mongoose
-- `routes/` - definiciones de rutas de Express
-- `middleware/` - middleware personalizado como la autenticación JWT
-- `Dockerfile` - imagen del contenedor para la API
-- `docker-compose.yml` - archivo de Compose para levantar la API y MongoDB
+---
+## ⚙️ Herramientas y sistema
+- MacOS Sonoma
+- Visual studio Code V1.100.3
+- Modelo ChatGPT 4o 
+- Postman V11.46.5
+- Docker Desktop V4.40.0
+- Terminal 
 
-## Requisitos previos
+## 🚀 Características
 
-Necesitas tener instalados **Docker** y **Docker Compose** en tu sistema.
+✅ CRUD completo (GET, POST, PUT, DELETE)  
+✅ Autenticación con JWT  
+✅ Base de datos MongoDB en Docker  
+✅ Script de seed (`npm run seed`) para cargar datos  
+✅ Arquitectura modular (models, routes, middleware)
 
-## Pasos de ejecución
+---
 
-1. Clona este repositorio
+## 🗂 Estructura del proyecto
+
+```
+Pokedex/
+├── middleware/            # Middlewares (ej: auth JWT)
+├── models/                # Esquemas de Mongoose
+├── routes/                # Endpoints de Express
+├── scripts/               # Script para poblar la base de datos
+│   └── seed.js
+├── index.js               # Entrada principal
+├── Dockerfile             # Imagen para la API
+├── docker-compose.yml     # Servicios: API + Mongo
+├── package.json
+└── README.md
+```
+
+---
+
+## 🧰 Requisitos
+
+- Docker
+- Docker Compose
+
+---
+
+## ⚙️ Instalación y ejecución
+
+1. Clona el repositorio:
    ```bash
-   git clone <url-del-repo>
-   cd Pokedex
+   git clone git@github.com:GustavoVidalA/PokedexBackend.git
+   cd pokedex-api
    ```
-2. Si deseas modificar las credenciales u otras variables de entorno, edita el apartado `environment` de `docker-compose.yml`.
-3. Construye las imágenes y levanta los contenedores
+
+2. Levanta los contenedores con:
    ```bash
    docker compose up --build
    ```
-   Una vez iniciado, la API estará disponible en `http://localhost:3000` y MongoDB escuchará en el puerto `27017` del host.
-4. Autentícate usando el usuario precargado y guarda el token resultante (ver sección siguiente).
-5. Realiza las peticiones que necesites a los distintos endpoints.
-6. Para detener los contenedores ejecuta
+
+3. Una vez iniciado, la API estará disponible en:  
+   [http://localhost:3000](http://localhost:3000)
+
+4. Carga los datos de ejemplo:
    ```bash
-   docker compose down
+   docker compose exec api npm run seed
    ```
 
-## Autenticación
+---
 
-La aplicación define un usuario inicial mediante variables de entorno en `docker-compose.yml`:
+## 🔐 Autenticación
 
-- **usuario:** `admin`
-- **contraseña:** `password`
+Credenciales por defecto definidas en `docker-compose.yml`:
 
-Para obtener un token JWT realiza lo siguiente:
+- **Usuario:** `admin`
+- **Contraseña:** `password`
 
-1. Envía una petición POST a `/login` con las credenciales en formato JSON
-   ```bash
-   curl -X POST http://localhost:3000/login \
-     -H "Content-Type: application/json" \
-     -d '{"username":"admin","password":"password"}'
-   ```
-2. El servicio responderá con un token que dura 1 hora. Inclúyelo en la cabecera
-   `Authorization` de las siguientes peticiones: `Authorization: Bearer <token>`.
 
-## Endpoints
-
-Todas las rutas bajo `/pokemon` requieren autenticación.
-
-| Método | Endpoint       | Descripción        |
-| ------ | -------------- | ------------------ |
-| POST   | `/pokemon`     | Crea un pokemon    |
-| GET    | `/pokemon`     | Lista los pokemons |
-| GET    | `/pokemon/:id` | Obtiene por id     |
-| PUT    | `/pokemon/:id` | Actualiza          |
-| DELETE | `/pokemon/:id` | Elimina            |
-
-## Ejemplo de uso
-
-Suponiendo que ya obtuviste el token mediante el paso anterior, puedes crear y consultar Pokémon con `curl`:
+### Obtener token JWT:
 
 ```bash
-# Crear un Pokémon
+curl -X POST http://localhost:3000/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"password"}'
+```
+
+Incluye el token en tus peticiones usando el header:
+
+```
+Authorization: Bearer TU_TOKEN
+```
+
+---
+
+## 📘 Endpoints
+
+| Método | Endpoint       | Descripción             | Auth requerida |
+|--------|----------------|-------------------------|----------------|
+| GET    | /pokemon       | Listar todos los Pokémon | ✅             |
+| POST   | /pokemon       | Crear un nuevo Pokémon   | ✅             |
+| GET    | /pokemon/:id   | Obtener un Pokémon       | ✅             |
+| PUT    | /pokemon/:id   | Actualizar un Pokémon    | ✅             |
+| DELETE | /pokemon/:id   | Eliminar un Pokémon      | ✅             |
+
+---
+## 🧪 Ejemplo de uso con Postman
+
+### 🔹 Crear Pokémon
+
+1. Método: `POST`  
+2. URL: `http://localhost:3000/pokemon`  
+3. Headers:  
+   - `Authorization: Bearer TU_TOKEN`  
+   - `Content-Type: application/json`
+4. Body (raw - JSON):
+   ```json
+   {
+     "name": "Pikachu",
+     "type": "Electric"
+   }
+   ```
+---
+
+### 🔹 Listar Pokémon
+
+1. Método: `GET`  
+2. URL: `http://localhost:3000/pokemon`  
+3. Header:  
+   - `Authorization: Bearer TU_TOKEN`
+
+---
+
+
+## 🧪 Ejemplo de uso curl
+
+### Crear Pokémon
+
+```bash
 curl -X POST http://localhost:3000/pokemon \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Pikachu","type":"electric"}'
+  -d '{"name":"Pikachu","type":"Electric"}'
+```
 
-# Obtener el listado
+### Listar Pokémon
+
+```bash
 curl http://localhost:3000/pokemon \
   -H "Authorization: Bearer $TOKEN"
 ```
+
+---
+
+## 🌱 Poblar la base de datos
+
+Después de levantar los contenedores, ejecuta:
+
+```bash
+docker compose exec api npm run seed
+```
+
+Esto insertará 10 Pokémon de ejemplo en la base de datos, incluyendo Bulbasaur, Charmander, Squirtle, etc.
+
+---
+
+## 🧾 Licencia
+
+Proyecto desarrollado como parte del **Diplomado Full Stack – Módulo Backend con Node.js**.
+
+---
+
+## 🙌 Autor
+
+**Gustavo Vidal**  
+[GitHub](https://github.com/tuusuario)
+
