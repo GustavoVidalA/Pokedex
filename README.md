@@ -1,3 +1,4 @@
+# Pokedex
 # API Pokedex
 
 API REST sencilla construida con Node.js, Express y MongoDB que se ejecuta dentro de Docker. Permite operaciones CRUD básicas protegidas con autenticación JWT. A continuación se describe el flujo completo para ponerla en marcha.
@@ -80,4 +81,3 @@ curl -X POST http://localhost:3000/pokemon \
 curl http://localhost:3000/pokemon \
   -H "Authorization: Bearer $TOKEN"
 ```
-
