@@ -132,7 +132,6 @@ Authorization: Bearer TU_TOKEN
 
 ---
 
-
 ## 🧪 Ejemplo de uso curl
 
 ### Crear Pokémon
@@ -174,5 +173,5 @@ Proyecto desarrollado como parte del **Diplomado Full Stack – Módulo Backend 
 ## 🙌 Autor
 
 **Gustavo Vidal**  
-[GitHub](https://github.com/tuusuario)
+[GitHub](https://github.com/GustavoVidalA)
 
